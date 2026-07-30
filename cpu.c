@@ -1,4 +1,4 @@
-#include "OS_Labs.h"
+#include "oslabs.h"
 
 /* helper - checks if a PCB has no process running */
 int is_null_pcb(struct PCB p) {
