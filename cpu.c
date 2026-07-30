@@ -1,8 +1,22 @@
 #include "oslabs.h"
 
-/* helper - checks if a PCB has no process running */
+/* helper, checks if a PCB is the null PCB  */
 int is_null_pcb(struct PCB p) {
     return p.process_id == 0;
+}
+
+/* helper - builds a null PCB (everything zeroed out) since oslabs.h
+   doesn't give us a NULLPCB constant to use directly */
+struct PCB make_null_pcb(void) {
+    struct PCB null_pcb;
+    null_pcb.process_id = 0;
+    null_pcb.arrival_timestamp = 0;
+    null_pcb.total_bursttime = 0;
+    null_pcb.execution_starttime = 0;
+    null_pcb.execution_endtime = 0;
+    null_pcb.remaining_bursttime = 0;
+    null_pcb.process_priority = 0;
+    return null_pcb;
 }
 
 /* Priority-based Preemptive Scheduling */
@@ -32,7 +46,7 @@ struct PCB handle_process_arrival_pp(struct PCB ready_queue[QUEUEMAX], int *queu
         return current_process;
     }
 
-    /* new process wins, preempt whatever is running now */
+    /* new process wins - preempt whatever is running now */
     current_process.execution_endtime = 0;
     current_process.remaining_bursttime = current_process.remaining_bursttime -
                                            (timestamp - current_process.execution_starttime);
@@ -50,7 +64,7 @@ struct PCB handle_process_arrival_pp(struct PCB ready_queue[QUEUEMAX], int *queu
 struct PCB handle_process_completion_pp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt,
                                          int timestamp) {
 
-    struct PCB next_process = NULLPCB;
+    struct PCB next_process = make_null_pcb();
 
     if (*queue_cnt == 0) {
         return next_process;
@@ -103,7 +117,7 @@ struct PCB handle_process_arrival_srtp(struct PCB ready_queue[QUEUEMAX], int *qu
         return current_process;
     }
 
-    /* new process is shorter, it preempts the running process */
+    /* new process is shorter - it preempts the running process */
     current_process.remaining_bursttime = current_process.remaining_bursttime -
                                            (time_stamp - current_process.execution_starttime);
     current_process.execution_starttime = 0;
@@ -122,7 +136,7 @@ struct PCB handle_process_arrival_srtp(struct PCB ready_queue[QUEUEMAX], int *qu
 struct PCB handle_process_completion_srtp(struct PCB ready_queue[QUEUEMAX], int *queue_cnt,
                                            int timestamp) {
 
-    struct PCB next_process = NULLPCB;
+    struct PCB next_process = make_null_pcb();
 
     if (*queue_cnt == 0) {
         return next_process;
@@ -149,7 +163,7 @@ struct PCB handle_process_completion_srtp(struct PCB ready_queue[QUEUEMAX], int 
     return next_process;
 }
 
-/* Round-Robin Scheduling  */
+/* Round-Robin Scheduling */
 
 struct PCB handle_process_arrival_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt,
                                       struct PCB current_process, struct PCB new_process,
@@ -179,7 +193,7 @@ struct PCB handle_process_arrival_rr(struct PCB ready_queue[QUEUEMAX], int *queu
 struct PCB handle_process_completion_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt,
                                          int time_stamp, int time_quantum) {
 
-    struct PCB next_process = NULLPCB;
+    struct PCB next_process = make_null_pcb();
 
     if (*queue_cnt == 0) {
         return next_process;
