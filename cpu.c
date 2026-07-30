@@ -149,7 +149,7 @@ struct PCB handle_process_completion_srtp(struct PCB ready_queue[QUEUEMAX], int 
     return next_process;
 }
 
-/* ---------------- Round-Robin Scheduling ---------------- */
+/* Round-Robin Scheduling  */
 
 struct PCB handle_process_arrival_rr(struct PCB ready_queue[QUEUEMAX], int *queue_cnt,
                                       struct PCB current_process, struct PCB new_process,
